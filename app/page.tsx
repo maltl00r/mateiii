@@ -3,17 +3,17 @@
 import { useMemo, useState } from "react";
 
 const sections = [
-  { number: "01", title: "Carátula general", type: "Carátulas", note: "Presentación y datos generales del portafolio.", count: "Pendiente de escaneo" },
-  { number: "02", title: "Actividades individuales", type: "Carátulas", note: "Trabajos y evidencias realizadas de forma individual.", count: "Pendiente de escaneo" },
-  { number: "03", title: "Actividades grupales", type: "Carátulas", note: "Evidencias de colaboración y trabajo en equipo.", count: "Pendiente de escaneo" },
-  { number: "04", title: "Laboratorios", type: "Carátulas", note: "Prácticas, resultados y conclusiones de laboratorio.", count: "Pendiente de escaneo" },
-  { number: "05", title: "Lecciones", type: "Carátulas", note: "Evaluaciones, controles y lecciones de la materia.", count: "Pendiente de escaneo" },
-  { number: "06", title: "Oficios", type: "Documentos", note: "Comunicaciones y documentos formales.", count: "Pendiente de escaneo" },
-  { number: "07", title: "Sílabo de la materia", type: "Documentos", note: "Plan, objetivos, contenidos y criterios de evaluación.", count: "Pendiente de escaneo" },
-  { number: "08", title: "Formularios", type: "Documentos", note: "Formatos y registros utilizados durante el curso.", count: "Pendiente de escaneo" },
-  { number: "09", title: "Mapas mentales", type: "Trabajos", note: "Síntesis visual de conceptos y relaciones.", count: "Pendiente de escaneo" },
-  { number: "10", title: "Tareas", type: "Trabajos", note: "Actividades, ejercicios y entregas.", count: "Pendiente de escaneo" },
-  { number: "11", title: "Otros documentos", type: "Otros", note: "Material adicional que forma parte del portafolio.", count: "Pendiente de escaneo" },
+  { number: "01", title: "Carátula general", type: "Carátulas", note: "Presentación y datos generales del portafolio.", file: "/pdfs/01-caratula-general.pdf" },
+  { number: "02", title: "Actividades individuales", type: "Carátulas", note: "Trabajos y evidencias realizadas de forma individual.", file: "/pdfs/02-actividades-individuales.pdf" },
+  { number: "03", title: "Actividades grupales", type: "Carátulas", note: "Evidencias de colaboración y trabajo en equipo.", file: "/pdfs/03-actividades-grupales.pdf" },
+  { number: "04", title: "Laboratorios", type: "Carátulas", note: "Prácticas, resultados y conclusiones de laboratorio.", file: "/pdfs/04-laboratorios.pdf" },
+  { number: "05", title: "Lecciones", type: "Carátulas", note: "Evaluaciones, controles y lecciones de la materia.", file: "/pdfs/05-lecciones.pdf" },
+  { number: "06", title: "Oficios", type: "Documentos", note: "Comunicaciones y documentos formales.", file: "/pdfs/06-oficios.pdf" },
+  { number: "07", title: "Sílabo de la materia", type: "Documentos", note: "Plan, objetivos, contenidos y criterios de evaluación.", file: "/pdfs/07-silabo.pdf" },
+  { number: "08", title: "Formularios", type: "Documentos", note: "Formatos y registros utilizados durante el curso.", file: "/pdfs/08-formularios.pdf" },
+  { number: "09", title: "Mapas mentales", type: "Trabajos", note: "Síntesis visual de conceptos y relaciones.", file: "/pdfs/09-mapas-mentales.pdf" },
+  { number: "10", title: "Tareas", type: "Trabajos", note: "Actividades, ejercicios y entregas.", file: "/pdfs/10-tareas.pdf" },
+  { number: "11", title: "Otros documentos", type: "Otros", note: "Material adicional que forma parte del portafolio.", file: "/pdfs/11-otros-documentos.pdf" },
 ];
 
 const filters = ["Todos", "Carátulas", "Documentos", "Trabajos", "Otros"];
@@ -51,7 +51,7 @@ export default function Home() {
         <section className="archive" id="archivo">
           <div className="archive-toolbar"><div><p className="eyebrow">Contenido</p><h2>Archivo del curso</h2></div><label className="search"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar en el archivo" aria-label="Buscar en el archivo" /></label></div>
           <div className="filter-row" aria-label="Filtrar secciones">{filters.map((item) => <button className={filter === item ? "filter active" : "filter"} key={item} onClick={() => setFilter(item)}>{item}</button>)}</div>
-          <div className="document-grid">{visibleSections.map((section) => <article className="document-card" id={section.number} key={section.number}><div className="card-top"><span>{section.number}</span><span className="file-state">{section.count}</span></div><h3>{section.title}</h3><p>{section.note}</p><button className="open-card" disabled>Ver documentos <span aria-hidden="true">↗</span></button></article>)}</div>
+          <div className="document-grid">{visibleSections.map((section) => <article className="document-card" id={section.number} key={section.number}><div className="card-top"><span>{section.number}</span><span className="file-state">{section.file ? "PDF estático" : "Pendiente de escaneo"}</span></div><h3>{section.title}</h3><p>{section.note}</p><div className={section.file ? "pdf-preview" : "pdf-preview pdf-empty"}>{section.file ? <iframe title={`Vista previa de ${section.title}`} src={`${section.file}#page=1&view=FitH`} /> : <span>Agrega un PDF en <code>public/pdfs</code></span>}</div>{section.file ? <a className="open-card" href={section.file} target="_blank" rel="noreferrer">Abrir PDF <span aria-hidden="true">↗</span></a> : <button className="open-card" disabled>Sin documentos <span aria-hidden="true">↗</span></button>}</article>)}</div>
           {visibleSections.length === 0 && <p className="empty-state">No hay secciones que coincidan con la búsqueda.</p>}
         </section>
 
