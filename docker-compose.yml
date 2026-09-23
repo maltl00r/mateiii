@@ -1,0 +1,19 @@
+services:
+  mateiii-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mateiii-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+    ports:
+      - "3002:3002"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    external: true
+    name: docker-servicios_webnet
