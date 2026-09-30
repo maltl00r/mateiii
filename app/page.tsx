@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import PdfCanvas from "./pdf-canvas";
 
 const sections = [
   { number: "01", title: "Documentos de evidencia", type: "Documentos", note: "Evidencias y documentos que respaldan el trabajo del curso.", file: "/pdfs/01-documentos-evidencia.pdf" },
@@ -20,6 +21,8 @@ export default function Home() {
   const [filter, setFilter] = useState("Todos");
   const [query, setQuery] = useState("");
   const [readerSection, setReaderSection] = useState<(typeof sections)[number] | null>(null);
+  const [readerPage, setReaderPage] = useState(1);
+  const [readerPageCount, setReaderPageCount] = useState(1);
   const visibleSections = useMemo(() => sections.filter((section) => {
     const matchesFilter = filter === "Todos" || section.type === filter;
     const matchesQuery = `${section.title} ${section.note}`.toLowerCase().includes(query.toLowerCase());
@@ -72,13 +75,13 @@ export default function Home() {
         </section>
 
         <section className="overview" aria-label="Resumen del portafolio">
-          <div><strong>{sections.length}</strong><span>secciones</span></div><div><strong>0</strong><span>archivos subidos</span></div><div><strong>01</strong><span>materia</span></div>
+          <div><strong>{sections.length}</strong><span>secciones</span></div><div><strong>{sections.filter((section) => section.file).length}</strong><span>archivos subidos</span></div><div><strong>01</strong><span>materia</span></div>
         </section>
 
         <section className="archive" id="archivo">
           <div className="archive-toolbar"><div><p className="eyebrow">Contenido</p><h2>Archivo del curso</h2></div><label className="search"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar en el archivo" aria-label="Buscar en el archivo" /></label></div>
           <div className="filter-row" aria-label="Filtrar secciones">{filters.map((item) => <button className={filter === item ? "filter active" : "filter"} key={item} onClick={() => setFilter(item)}>{item}</button>)}</div>
-          <div className="document-grid">{visibleSections.map((section) => <article className="document-card" id={section.number} key={section.number}><div className="card-top"><span>{section.number}</span><span className="file-state">{section.file ? "PDF estático" : "Pendiente de escaneo"}</span></div><h3>{section.title}</h3><p>{section.note}</p><div className={section.file ? "pdf-preview" : "pdf-preview pdf-empty"}>{section.file ? <iframe title={`Vista previa de ${section.title}`} src={`${section.file}#page=1&view=FitH`} /> : <span>Agrega un PDF en <code>public/pdfs</code></span>}</div>{section.file ? <button className="open-card" onClick={() => setReaderSection(section)}>Leer PDF <span aria-hidden="true">↗</span></button> : <button className="open-card" disabled>Sin documentos <span aria-hidden="true">↗</span></button>}</article>)}</div>
+          <div className="document-grid">{visibleSections.map((section) => <article className="document-card" id={section.number} key={section.number}><div className="card-top"><span>{section.number}</span><span className="file-state">{section.file ? "PDF estático" : "Pendiente de escaneo"}</span></div><h3>{section.title}</h3><p>{section.note}</p><div className={section.file ? "pdf-preview" : "pdf-preview pdf-empty"}>{section.file ? <PdfCanvas file={section.file} fitHeight /> : <span>Agrega un PDF en <code>public/pdfs</code></span>}</div>{section.file ? <button className="open-card" onClick={() => { setReaderPage(1); setReaderPageCount(1); setReaderSection(section); }}>Leer PDF <span aria-hidden="true">↗</span></button> : <button className="open-card" disabled>Sin documentos <span aria-hidden="true">↗</span></button>}</article>)}</div>
           {visibleSections.length === 0 && <p className="empty-state">No hay secciones que coincidan con la búsqueda.</p>}
         </section>
 
@@ -88,7 +91,12 @@ export default function Home() {
               <div><p className="eyebrow">Lector PDF · Sección {readerSection.number}</p><h2 id="reader-title">{readerSection.title}</h2></div>
               <div className="reader-actions"><a href={readerSection.file} download={`${readerSection.number}-${readerSection.title.toLowerCase().replaceAll(" ", "-")}.pdf`}>Descargar PDF <span aria-hidden="true">↓</span></a><a href={readerSection.file} target="_blank" rel="noreferrer">Abrir aparte <span aria-hidden="true">↗</span></a><button type="button" onClick={() => setReaderSection(null)}>Cerrar</button></div>
             </div>
-            <iframe className="reader-frame" title={`Lector PDF de ${readerSection.title}`} src={`${readerSection.file}#toolbar=1&navpanes=0&view=FitH`} />
+            <div className="reader-pagination" aria-label="Páginas del documento">
+              <button type="button" onClick={() => setReaderPage((page) => Math.max(1, page - 1))} disabled={readerPage <= 1}>← Anterior</button>
+              <span>Página {readerPage} de {readerPageCount}</span>
+              <button type="button" onClick={() => setReaderPage((page) => Math.min(readerPageCount, page + 1))} disabled={readerPage >= readerPageCount}>Siguiente →</button>
+            </div>
+            <div className="reader-frame"><PdfCanvas key={readerSection.file} file={readerSection.file} pageNumber={readerPage} fitWidth onPageCount={setReaderPageCount} /></div>
           </section>
         </div>}
 
