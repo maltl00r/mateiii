@@ -86,7 +86,7 @@ export default function Home() {
           <section className="pdf-reader" role="dialog" aria-modal="true" aria-labelledby="reader-title">
             <div className="reader-toolbar">
               <div><p className="eyebrow">Lector PDF · Sección {readerSection.number}</p><h2 id="reader-title">{readerSection.title}</h2></div>
-              <div className="reader-actions"><a href={readerSection.file} target="_blank" rel="noreferrer">Abrir aparte <span aria-hidden="true">↗</span></a><button type="button" onClick={() => setReaderSection(null)}>Cerrar</button></div>
+              <div className="reader-actions"><a href={readerSection.file} download={`${readerSection.number}-${readerSection.title.toLowerCase().replaceAll(" ", "-")}.pdf`}>Descargar PDF <span aria-hidden="true">↓</span></a><a href={readerSection.file} target="_blank" rel="noreferrer">Abrir aparte <span aria-hidden="true">↗</span></a><button type="button" onClick={() => setReaderSection(null)}>Cerrar</button></div>
             </div>
             <iframe className="reader-frame" title={`Lector PDF de ${readerSection.title}`} src={`${readerSection.file}#toolbar=1&navpanes=0&view=FitH`} />
           </section>
