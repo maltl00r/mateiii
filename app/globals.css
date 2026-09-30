@@ -127,6 +127,7 @@ footer a:hover { color: var(--signal); }
   .portfolio-header::after { top: 20px; right: 0; font-size: 260px; }
   .header-note { margin-top: 35px; }
   .academic-profile { grid-template-columns: 1fr; gap: 26px; }
+  .document-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {
@@ -148,10 +149,9 @@ footer a:hover { color: var(--signal); }
   .search { width: 100%; margin-top: 22px; }
   .filter-row { overflow-x: auto; }
   .filter { flex: 0 0 auto; white-space: nowrap; }
-  .document-grid { grid-template-columns: 1fr; }
-  .document-card { min-height: 280px; }
+  .document-card { display: flex; min-height: 0; flex-direction: column; }
   .document-card h3 { margin-top: 20px; }
-  .pdf-preview { min-height: 190px; }
+  .pdf-preview { height: 210px; min-height: 210px; flex: 0 0 210px; }
   footer { gap: 14px; flex-direction: column; }
   .reader-backdrop { padding: 0; }
   .pdf-reader { width: 100%; height: 100%; padding: 14px; border: 0; }
